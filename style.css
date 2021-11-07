@@ -12,10 +12,83 @@ body {
 
 .container {
   display: flex;
-  justify-content: center;
 }
 
 canvas {
-  max-width: 100vw;
-  max-height: 100vh;
+  width: 70%;
+  max-height: 100%;
+  float: left;
+}
+
+.hiscores {
+  width: 30%;
+  height: 100%;
+  float: left;
+  color: #fff;
+  text-align: center;
+}
+
+.hiscores h1 {
+  font-family: "Arial";
+  font-size: 36;
+  font-style: normal;
+  font-weight: bold;
+  color: #88a050;
+  padding-top: 10px;
+  padding-bottom: 25px;
+}
+
+#overlay {
+  display: none;
+  place-items: center;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #000000c4;
+}
+
+#scoreForm {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  background-color: #88a050;
+  color: #fff;
+  padding: 10px;
+}
+
+button {
+  padding: 8px;
+  border: none;
+}
+
+input[type="number"] {
+  pointer-events: none;
+  background-color: transparent;
+  border: none;
+  color: #fff;
+}
+
+@media screen and (max-width: 580px) {
+  canvas {
+    width: 100%;
+    display: block;
+  }
+  .container {
+    width: 100%;
+    display: block;
+  }
+  .hiscores {
+    padding-top: 50px;
+    padding-bottom: 50px;
+    width: 100%;
+    display: block;
+  }
+}
+
+li {
+  font-size: 20px;
+  list-style-type: none;
+  padding-top: 15px;
 }

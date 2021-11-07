@@ -6,11 +6,11 @@ export default class Zombie {
   constructor({ app, player, main }) {
     this.app = app;
     this.player = player;
-    this.speed = 1;
+    let speedThreshold = 2; // 1
     let r = this.randomSpawnPoint();
 
     let zombieName = zombies[Math.floor(Math.random() * zombies.length)];
-    this.speed = zombieName === "quickzee" ? 1 : 0.25;
+    this.speed = zombieName === "quickzee" ? speedThreshold : 0.25;
     let sheet =
       PIXI.Loader.shared.resources[`assets/${zombieName}.json`].spritesheet;
 

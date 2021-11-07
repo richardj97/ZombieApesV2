@@ -9,7 +9,29 @@
   <body>
     <div class="container">
       <canvas id="mycanvas"></canvas>
+      <div class="hiscores">
+        <h1>Hiscores</h1>
+        <ul id="hiscoreList"></ul>
+      </div>
     </div>
+    <div id="overlay">
+      <form id="scoreForm">
+        <div>
+          <label>You scored:</label>
+          <input type="number" name="score" id="score" readonly="" />
+        </div>
+        <input
+          type="text"
+          name="player"
+          id="player"
+          placeholder="Enter your name"
+          maxlength="16"
+        />
+        <button type="submit">Submit</button>
+      </form>
+    </div>
+    <script src="./firebase-app.js"></script>
+    <script src="./firebase-firestore.js"></script>
     <script type="module" src="index.js"></script>
   </body>
 </html>

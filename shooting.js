@@ -7,8 +7,8 @@ export default class Shooting {
     this.player = player;
     this.bulletSpeed = 12;
     this.bullets = [];
-    this.bulletRadius = 8;
-    this.maxBullets = 30;
+    this.bulletRadius = 1;
+    this.maxBullets = 3;
     this.audio = new Audio("./assets/shoot.mp3");
   }
 

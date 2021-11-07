@@ -9,6 +9,7 @@ import GameState from "./game-state";
 let canvasSize = 400;
 let scoreSceneContainer = null;
 let player = null;
+let firebaseApp = null;
 
 const canvas = document.getElementById("mycanvas");
 const app = new PIXI.Application({
@@ -44,11 +45,26 @@ zombieHorde.addEventListener("timeupdate", function () {
 initialise();
 
 async function initialise() {
+  const firebaseConfig = {
+    apiKey: "AIzaSyDCjL_fR3vKJwMs7aGkwq6kmoDIMlgCGwA",
+    authDomain: "zombieape-88c01.firebaseapp.com",
+    projectId: "zombieape-88c01",
+    storageBucket: "zombieape-88c01.appspot.com",
+    messagingSenderId: "215176598832",
+    appId: "1:215176598832:web:03f72f658fa7793b20a4f5"
+  };
+
+  // Initialise Firebase
+  firebaseApp = firebase.initializeApp(firebaseConfig);
+
   app.gameState = GameState.PREINTRO;
 
   try {
+    console.log("Loading hiscores...");
+    await getHiscores();
     console.log("Game Loading...");
     await loadAssets();
+    console.log("Game Assets Loaded Successfully...");
 
     app.weather = new Weather({ app });
     player = new Player({ app });
@@ -92,6 +108,15 @@ async function initialise() {
             zombieRadius: 16
           });
           break;
+        case GameState.GAMEOVER:
+          app.stage.removeChild(scoreSceneContainer);
+
+          let t = setInterval(() => {
+            clearInterval(t);
+            document.getElementById("score").value = player.score;
+            document.getElementById("overlay").style.display = "grid";
+          }, 1500);
+          break;
         default:
           break;
       }
@@ -133,7 +158,7 @@ function updateScore(score) {
     "Score: " + score,
     new PIXI.TextStyle(subTextStyle)
   );
-  scoreText.x = 70;
+  scoreText.x = app.screen.width / 2;
   scoreText.y = 15;
   scoreText.anchor.set(0.5, 0);
   scoreSceneContainer.zIndex = 1;
@@ -164,6 +189,48 @@ function createScene(sceneText, sceneSubText) {
   return sceneContainer;
 }
 
+async function getHiscores() {
+  const db = firebaseApp.firestore();
+
+  db.collection("hiscores")
+    .get()
+    .then(function (snapshot) {
+      let hiscores = [];
+
+      snapshot.forEach(function (doc) {
+        if (doc.exists) {
+          hiscores.push({
+            name: doc.data().name,
+            score: doc.data().score,
+            ts: doc.data().ts
+          });
+        }
+      });
+
+      hiscores.sort(function (a, b) {
+        return a.score - b.score;
+      });
+
+      var hiscoreList = document.getElementById("hiscoreList");
+
+      hiscores.forEach(function (score, s) {
+        hiscoreList.insertAdjacentHTML(
+          "afterend",
+          "<li>" +
+            (hiscores.length - s) +
+            ") <b>" +
+            score.name +
+            "</b>: " +
+            score.score +
+            "</li>"
+        );
+      });
+    })
+    .catch(function (err) {
+      return [];
+    });
+}
+
 async function loadAssets() {
   return new Promise((resolve, reject) => {
     zombies.forEach((z) => PIXI.Loader.shared.add(`assets/${z}.json`));
@@ -192,4 +259,30 @@ function clickHandler() {
   }
 }
 
+async function addScore(e) {
+  e.preventDefault();
+
+  let score = e.target.elements.score.value;
+  let name = e.target.elements.player.value;
+
+  const db = firebaseApp.firestore();
+
+  db.collection("hiscores")
+    .doc()
+    .set({
+      name: name,
+      score: parseInt(score),
+      ts: Date.now()
+    })
+    .then(function () {
+      window.location.reload();
+    })
+    .catch(function (error) {
+      alert("Error: " + error.message);
+    });
+}
+
+var form = document.getElementById("scoreForm");
+form.addEventListener("submit", addScore);
 document.addEventListener("click", clickHandler);
+document.addEventListener("touchstart", clickHandler);
