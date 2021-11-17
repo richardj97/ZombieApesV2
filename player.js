@@ -85,6 +85,7 @@ export default class Player {
     }
 
     const mouse = this.app.renderer.plugins.interaction.mouse;
+
     const cursorPosition = mouse.global;
     let angle =
       Math.atan2(
@@ -103,6 +104,7 @@ export default class Player {
       this.shooting.shoot = mouse.buttons !== 0;
       this.lastMouseButton = mouse.buttons;
     }
+
     this.shooting.update(delta);
   }
 }

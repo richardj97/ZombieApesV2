@@ -111,11 +111,13 @@ async function initialise() {
         case GameState.GAMEOVER:
           app.stage.removeChild(scoreSceneContainer);
 
-          let t = setInterval(() => {
-            clearInterval(t);
-            document.getElementById("score").value = player.score;
-            document.getElementById("overlay").style.display = "grid";
-          }, 1500);
+          if (player.score > 0) {
+            let t = setInterval(() => {
+              clearInterval(t);
+              document.getElementById("score").value = player.score;
+              document.getElementById("overlay").style.display = "grid";
+            }, 1500);
+          }
           break;
         default:
           break;
@@ -215,7 +217,7 @@ async function getHiscores() {
 
       hiscores.forEach(function (score, s) {
         hiscoreList.insertAdjacentHTML(
-          "afterend",
+          "afterbegin",
           "<li>" +
             (hiscores.length - s) +
             ") <b>" +
@@ -261,6 +263,7 @@ function clickHandler() {
 
 async function addScore(e) {
   e.preventDefault();
+  document.getElementById("submitBtn").disabled = true;
 
   let score = e.target.elements.score.value;
   let name = e.target.elements.player.value;
@@ -279,10 +282,15 @@ async function addScore(e) {
     })
     .catch(function (error) {
       alert("Error: " + error.message);
+      document.getElementById("submitBtn").disabled = false;
     });
+}
+
+function desktopOnly() {
+  alert("You can only play this game on desktop only!");
 }
 
 var form = document.getElementById("scoreForm");
 form.addEventListener("submit", addScore);
 document.addEventListener("click", clickHandler);
-document.addEventListener("touchstart", clickHandler);
+document.addEventListener("touchstart", desktopOnly);
